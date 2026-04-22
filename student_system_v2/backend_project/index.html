@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>البرنامج الأنسب ل طلبه الدلتا</title>
+
+    <!-- Google Fonts: Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#3b82f6', // blue-500
+                        secondary: '#10b981', // emerald-500
+                        base: '#f8fafc', // slate-50
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        /* Views visibility classes */
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        /* Hidden class for utility */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Testimonials Marquee Animations */
+        @keyframes marquee-vertical {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(calc(-100% - var(--gap)));
+            }
+        }
+
+        .animate-marquee-vertical {
+            animation: marquee-vertical var(--duration) linear infinite;
+        }
+    </style>
+
+    <!-- Backend API mode: Dexie replaced by server API -->
+</head>
+
+<body class="text-slate-800 bg-base min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-200">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="font-bold text-xl text-primary flex items-center gap-2 cursor-pointer" id="logo-btn">
+                <img src="logo.png" alt="Logo" class="h-[64px] w-auto object-contain">
+                البرنامج الأنسب ل طلبه الدلتا
+            </div>
+
+            <nav class="hidden md:flex gap-6 font-semibold items-center" id="main-nav">
+                <!-- Navigation links dynamically populated -->
+            </nav>
+
+            <div class="flex gap-3 items-center" id="auth-buttons">
+                <!-- Login/Signup or User Profile menu dynamically populated -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="relative flex-grow flex flex-col min-h-[calc(100vh-80px)]" id="app-container">
+
+        <!-- View: Landing Page -->
+        <section id="view-landing" class="view-section active relative overflow-hidden">
+            <!-- Grid Animation Background -->
+            <div class="infinite-grid-bg"></div>
+
+            <div
+                class="relative z-10 text-center w-full max-w-3xl mx-auto px-4 flex flex-col items-center justify-center min-h-[calc(100vh-70px)]">
+                <h1 class="text-5xl font-bold text-slate-800 mb-6">مرحباً بك في نظام إدارة الاختبارات</h1>
+                <p class="text-xl text-slate-600 mb-10 w-full">منصة متكاملة لإدارة اختبارات تحديد المستوى وعرض
+                    النتائج الأكاديمية بأمان وفاعلية.</p>
+                <div class="flex justify-center gap-4 w-full" id="landing-actions">
+                    <button id="btn-landing-login"
+                        class="bg-primary hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-bold shadow-md transition-colors z-10 relative">تسجيل
+                        الدخول</button>
+                    <button id="btn-landing-signup"
+                        class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 px-8 py-3 rounded-lg font-bold shadow-sm transition-colors z-10 relative">إنشاء
+                        حساب</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Login -->
+        <section id="view-login"
+            class="view-section relative overflow-hidden min-h-[calc(100vh-80px)] flex-col items-center justify-center pt-8 md:pt-0">
+            <div class="infinite-grid-bg"></div>
+            <div
+                class="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-10 container max-w-md mx-auto px-4 w-full mt-10 md:mt-0">
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-bold text-center mb-6 text-slate-800">تسجيل الدخول</h2>
+                    <form id="form-login" class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-slate-700">البريد الإلكتروني</label>
+                            <input type="email" id="login-email" required
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-slate-700">كلمة المرور</label>
+                            <input type="password" id="login-password" required
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        <div id="login-error" class="hidden text-red-500 text-sm font-semibold bg-red-50 p-2 rounded">
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-bold shadow-sm transition-colors mt-4">تسجيل
+                            الدخول</button>
+                    </form>
+                    <div class="mt-6 text-center text-sm text-slate-600">
+                        ليس لديك حساب؟ <strong class="text-primary hover:underline font-semibold cursor-pointer"
+                            id="link-to-signup">سجل الآن</strong>
+                    </div>
+                </div>
+        </section>
+
+        <!-- View: Signup -->
+        <section id="view-signup"
+            class="view-section relative overflow-hidden min-h-[calc(100vh-80px)] flex-col items-center justify-center pt-8 md:pt-0">
+            <div class="infinite-grid-bg"></div>
+            <div
+                class="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] z-10 container max-w-md mx-auto px-4 w-full mt-10 md:mt-0">
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                    <h2 class="text-2xl font-bold text-center mb-6 text-slate-800">إنشاء حساب جديد</h2>
+                    <form id="form-signup" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-slate-700">الاسم الكامل</label>
+                            <input type="text" id="signup-name" required
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-slate-700">البريد الإلكتروني</label>
+                            <input type="email" id="signup-email" required
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2 text-slate-700">كلمة المرور</label>
+                            <input type="password" id="signup-password" required
+                                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        </div>
+                        <div id="signup-error" class="hidden text-red-500 text-sm font-semibold bg-red-50 p-2 rounded">
+                        </div>
+                        <button type="submit"
+                            class="w-full bg-secondary hover:bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold shadow-sm transition-colors mt-4">إنشاء
+                            حساب</button>
+                    </form>
+                    <div class="mt-6 text-center text-sm text-slate-600">
+                        لديك حساب بالفعل؟ <strong class="text-primary hover:underline font-semibold cursor-pointer"
+                            id="link-to-login">تسجيل الدخول</strong>
+                    </div>
+                </div>
+        </section>
+
+        <!-- View: Student Dashboard -->
+        <section id="view-student" class="view-section container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Sidebar Profile -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="text-center mb-6">
+                        <div
+                            class="w-24 h-24 rounded-full bg-slate-200 mx-auto mb-4 overflow-hidden shadow-sm flex items-center justify-center relative cursor-pointer group">
+                            <img id="profile-pic-preview" src="" class="w-full h-full object-cover hidden">
+                            <div id="profile-pic-placeholder" class="text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                            <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center text-white text-xs z-10 text-center p-1"
+                                onclick="document.getElementById('profile-pic-upload').click()">تغيير الصورة</div>
+                            <input type="file" id="profile-pic-upload" class="hidden" accept="image/*">
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800" id="student-name">الاسم</h3>
+                        <p class="text-slate-500 text-sm mb-2" id="student-email">البريد الإلكتروني</p>
+                        <span
+                            class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-semibold"
+                            id="student-department">القسم: غير محدد</span>
+                    </div>
+
+                    <div class="border-t border-slate-100 pt-4">
+                        <h4 class="font-bold text-slate-700 mb-3 text-sm">تغيير كلمة المرور</h4>
+                        <form id="form-change-password" class="space-y-3">
+                            <input type="password" id="new-password" placeholder="كلمة المرور الجديدة" required
+                                class="w-full px-3 py-2 text-sm border border-slate-300 rounded focus:outline-none focus:border-primary">
+                            <button type="submit"
+                                class="w-full bg-slate-800 hover:bg-slate-700 text-white text-sm px-3 py-2 rounded font-semibold transition-colors">تحديث</button>
+                            <div id="pw-update-msg" class="text-xs font-semibold hidden text-center mt-2"></div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Main Dashboard Details -->
+                <div class="md:col-span-2 space-y-6">
+                    <!-- Announcements / Department Assignments -->
+                    <div id="student-alert-container"
+                        class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hidden">
+                        <!-- Content injected dynamically -->
+                    </div>
+
+                    <!-- Available Exams -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">الاختبارات المتوفرة</h3>
+                        <div id="student-exams-list" class="space-y-3">
+                            <!-- Exams generated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Exam Results Summary -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">نتائج الاختبارات السابقة</h3>
+                        <div id="student-exam-results" class="space-y-3 font-semibold text-sm">
+                            <!-- Exam results injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Annual Results -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4 border-b pb-2">النتائج السنوية</h3>
+                        <div id="student-annual-results" class="space-y-3">
+                            <!-- Annual results injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- View: Take Exam -->
+        <section id="view-take-exam" class="view-section container max-w-3xl mx-auto px-4 py-8">
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center border-b border-slate-200 pb-4 mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800" id="exam-title-display">عنوان الاختبار</h2>
+                    <button id="btn-cancel-exam" class="text-slate-500 hover:text-red-500 font-semibold text-sm">إلغاء
+                        والعودة</button>
+                </div>
+                <!-- Exam Form -->
+                <form id="form-take-exam">
+                    <div id="exam-questions-container" class="space-y-8 mb-8">
+                        <!-- Questions injected here via JS -->
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-secondary hover:bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold shadow-md transition-colors text-lg">إنهاء
+                        الاختبار وإرسال الإجابات</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- View: Admin Dashboard -->
+        <section id="view-admin" class="view-section container mx-auto px-4 py-8">
+            <div class="mb-8 flex justify-between items-center border-b pb-4">
+                <h2 class="text-2xl font-bold text-slate-800">لوحة تحكم الإدارة</h2>
+                <div class="flex gap-2">
+                    <button id="tab-manage-exams"
+                        class="bg-primary text-white px-4 py-2 rounded shadow text-sm font-semibold">إدارة
+                        الاختبارات</button>
+                    <button id="tab-manage-students"
+                        class="bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 px-4 py-2 rounded shadow-sm text-sm font-semibold">إدارة
+                        الطلاب</button>
+                    <button id="tab-manage-system"
+                        class="bg-white text-slate-700 border border-slate-300 hover:bg-slate-50 px-4 py-2 rounded shadow-sm text-sm font-semibold">إدارة
+                        النظام والبيانات</button>
+                </div>
+            </div>
+
+            <!-- Admin Subview: Manage Exams -->
+            <div id="admin-subview-exams" class="space-y-8 block">
+                <!-- Create Exam Form -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">إنشاء اختبار جديد</h3>
+                    <form id="form-create-exam" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-1">اسم الاختبار</label>
+                            <input type="text" id="new-exam-title" required
+                                class="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:border-primary">
+                        </div>
+                        <div class="flex items-center gap-2 mt-6">
+                            <input type="checkbox" id="new-exam-main"
+                                class="w-5 h-5 text-primary border-slate-300 rounded">
+                            <label for="new-exam-main" class="text-sm font-semibold">اختبار تحديد مستوى رئيسي (توزيع
+                                الأقسام)</label>
+                        </div>
+                        <div id="target-dept-container" class="md:col-span-2">
+                            <label class="block text-sm font-semibold mb-1">القسم المستهدف (يظهر فقط لطلاب هذا
+                                القسم)</label>
+                            <select id="new-exam-dept"
+                                class="w-full md:w-1/2 px-3 py-2 border border-slate-300 rounded focus:outline-none focus:border-primary">
+                                <option value="">بدون قسم (اختر قسم)</option>
+                                <option value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
+                                <option value="محاسبة">محاسبة</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 text-left mt-2">
+                            <button type="submit"
+                                class="bg-secondary hover:bg-emerald-600 text-white px-6 py-2 rounded shadow font-bold text-sm">حفظ
+                                الاختبار</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Exams List & Add Questions -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">قائمة الاختبارات وإضافة الأسئلة</h3>
+                    <div id="admin-exams-list" class="space-y-6">
+                        <!-- Admin Exams List -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Subview: Manage Students -->
+            <div id="admin-subview-students" class="hidden space-y-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+                        <h3 class="text-lg font-bold text-slate-800">قائمة الطلاب</h3>
+                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                            <div class="relative flex-grow sm:w-64">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute top-1/2 -translate-y-1/2 right-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+                                </svg>
+                                <input type="text" id="search-students" placeholder="بحث بالاسم أو البريد أو القسم..."
+                                    class="w-full pr-9 pl-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-primary">
+                            </div>
+                            <button id="btn-open-add-student"
+                                class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors flex items-center gap-2 justify-center whitespace-nowrap">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                                إضافة طالب جديد
+                            </button>
+                        </div>
+                    </div>
+                    <p id="students-count-label" class="text-xs text-slate-500 mb-3"></p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-sm">
+                                    <th class="py-3 px-4 font-bold text-slate-700">الاسم</th>
+                                    <th class="py-3 px-4 font-bold text-slate-700">البريد الإلكتروني</th>
+                                    <th class="py-3 px-4 font-bold text-slate-700">القسم</th>
+                                    <th class="py-3 px-4 font-bold text-slate-700">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-students-list" class="text-sm">
+                                <!-- Student List Injected Here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Subview: System Management -->
+            <div id="admin-subview-system" class="hidden space-y-8">
+                <!-- System & Data Management -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 border-t-4 border-t-indigo-500">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-500" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                        </svg>
+                        إدارة النظام والبيانات
+                    </h3>
+                    <p class="text-sm text-slate-600 mb-6">
+                        يمكنك تصدير قاعدة البيانات الحالية بأكملها (الطلاب، الاختبارات، النتائج) كملف احتياطي، أو
+                        استيراد ملف سابق لاستعادة البيانات.
+                    </p>
+                    <div class="flex gap-4">
+                        <button id="btn-export-db"
+                            class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-6 py-3 rounded-lg font-bold transition-colors shadow-sm flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            تصدير البيانات
+                        </button>
+
+                        <div>
+                            <button onclick="document.getElementById('importFile').click()"
+                                class="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-6 py-3 rounded-lg font-bold transition-colors shadow-sm flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                                استيراد البيانات
+                            </button>
+                            <input type="file" id="importFile" accept=".json" class="hidden">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Modal for Adding Annual Result -->
+    <div id="modal-annual-result"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4 text-slate-800" id="annual-modal-title">إضافة نتيجة سنوية للطالب</h3>
+            <p id="modal-student-name" class="text-sm text-slate-500 mb-4 font-semibold"></p>
+            <form id="form-annual-result" class="space-y-4">
+                <input type="hidden" id="modal-student-id">
+                <input type="hidden" id="modal-annual-edit-index" value="-1">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">اسم/عنوان السنة (مثال: سنة أولى)</label>
+                    <input type="text" id="annual-year-title" required
+                        class="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">النص / النتيجة التقييمية</label>
+                    <textarea id="annual-result-text" required rows="3"
+                        class="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:border-primary"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" id="btn-close-annual-modal"
+                        class="px-4 py-2 border border-slate-300 text-slate-600 rounded font-semibold hover:bg-slate-50">إلغاء</button>
+                    <button type="submit"
+                        class="bg-primary text-white px-4 py-2 rounded font-bold shadow hover:bg-blue-600">حفظ
+                        النتيجة</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Editing Exam -->
+    <div id="modal-edit-exam" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4 text-slate-800">تعديل بيانات الاختبار</h3>
+            <form id="form-edit-exam" class="space-y-4">
+                <input type="hidden" id="edit-exam-id">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">اسم الاختبار</label>
+                    <input type="text" id="edit-exam-title" required
+                        class="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:border-primary">
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                    <input type="checkbox" id="edit-exam-main" class="w-5 h-5 text-primary border-slate-300 rounded">
+                    <label for="edit-exam-main" class="text-sm font-semibold">اختبار تحديد مستوى رئيسي</label>
+                </div>
+                <div id="edit-target-dept-container">
+                    <label class="block text-sm font-semibold mb-1">القسم المستهدف</label>
+                    <select id="edit-exam-dept"
+                        class="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:border-primary">
+                        <option value="">بدون قسم (اختر قسم)</option>
+                        <option value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
+                        <option value="محاسبة">محاسبة</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" id="btn-close-edit-exam"
+                        class="px-4 py-2 border border-slate-300 text-slate-600 rounded font-semibold hover:bg-slate-50">إلغاء</button>
+                    <button type="submit"
+                        class="bg-primary text-white px-4 py-2 rounded font-bold shadow hover:bg-blue-600">حفظ
+                        التعديلات</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Editing Question -->
+    <div id="modal-edit-question"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4 text-slate-800">تعديل السؤال</h3>
+            <p class="text-xs text-orange-600 bg-orange-50 p-2 rounded mb-4 font-semibold">تنبيه: تغيير الإجابة الصحيحة
+                سيؤدي إلى إعادة حساب درجات جميع الطلاب الذين أدوا هذا الاختبار تلقائياً.</p>
+            <form id="form-edit-question" class="space-y-4">
+                <input type="hidden" id="edit-question-id">
+                <input type="hidden" id="edit-question-exam-id">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">نص السؤال</label>
+                    <input type="text" id="edit-question-text" required
+                        class="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:border-primary">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">الإجابة الصحيحة</label>
+                    <select id="edit-question-ans"
+                        class="w-full px-3 py-2 border border-slate-300 rounded focus:outline-none focus:border-primary">
+                        <option value="true">صح (True)</option>
+                        <option value="false">خطأ (False)</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 mt-4">
+                    <button type="button" id="btn-close-edit-question"
+                        class="px-4 py-2 border border-slate-300 text-slate-600 rounded font-semibold hover:bg-slate-50">إلغاء</button>
+                    <button type="submit"
+                        class="bg-primary text-white px-4 py-2 rounded font-bold shadow hover:bg-blue-600">حفظ وإعادة
+                        الحساب</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Viewing Student Exam History -->
+    <div id="modal-view-history"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md max-h-[90vh] flex flex-col">
+            <h3 class="text-xl font-bold mb-4 text-slate-800" id="history-modal-title">نتائج اختبارات الطالب</h3>
+            <p id="history-modal-student-name" class="text-sm text-slate-500 mb-4 font-semibold"></p>
+
+            <div id="history-results-container" class="overflow-y-auto pr-2 mb-4 flex-grow">
+                <!-- Data injected via JS -->
+            </div>
+
+            <div class="flex justify-end gap-2 mt-auto pt-4 border-t border-slate-100">
+                <button type="button" id="btn-close-history-modal"
+                    class="px-4 py-2 border border-slate-300 text-slate-600 rounded font-semibold hover:bg-slate-50">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Student by Admin -->
+    <div id="modal-add-student" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-xl font-bold text-slate-800">إضافة طالب جديد</h3>
+                <button id="btn-close-add-student" class="text-slate-400 hover:text-slate-600 text-2xl leading-none">&times;</button>
+            </div>
+            <div id="add-student-error" class="hidden bg-red-50 border border-red-200 text-red-700 text-sm px-3 py-2 rounded mb-4 font-semibold"></div>
+            <form id="form-add-student" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">الاسم الكامل <span class="text-red-500">*</span></label>
+                    <input type="text" id="add-student-name" required placeholder="محمد أحمد"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-primary text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">البريد الإلكتروني <span class="text-red-500">*</span></label>
+                    <input type="email" id="add-student-email" required placeholder="student@example.com"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-primary text-sm" dir="ltr">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">كلمة المرور <span class="text-red-500">*</span></label>
+                    <input type="password" id="add-student-password" required placeholder="Delta2024"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-primary text-sm" dir="ltr">
+                    <div id="add-student-pw-hint" class="mt-1 text-xs space-y-0.5"></div>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">القسم (اختياري)</label>
+                    <select id="add-student-dept"
+                        class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-primary text-sm">
+                        <option value="">غير محدد</option>
+                        <option value="قسم أ">قسم أ</option>
+                        <option value="قسم ب">قسم ب</option>
+                        <option value="نظم المعلومات الإدارية">نظم المعلومات الإدارية</option>
+                        <option value="محاسبة">محاسبة</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" id="btn-cancel-add-student"
+                        class="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg font-semibold hover:bg-slate-50 text-sm">إلغاء</button>
+                    <button type="submit" id="btn-submit-add-student"
+                        class="bg-primary hover:bg-blue-600 text-white px-5 py-2 rounded-lg font-bold shadow text-sm transition-colors">إضافة الطالب</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- App Scripts -->
+    <!-- Type module enables local ES6 imports if running via a local server -->
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/student.js"></script>
+    <script type="module" src="js/admin.js"></script>
+    <script type="module" src="js/gridworm.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>
